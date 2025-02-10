@@ -108,7 +108,6 @@ if CLIENT then
     local buttonPadding = 50
     local baseFontSize = 18
 
-    -- Общий звук для всех команд
     local sounds = {
         'npc/metropolice/vo/on1.wav',
         'npc/metropolice/vo/on2.wav',
@@ -117,17 +116,14 @@ if CLIENT then
         return sounds[math.random(#sounds)]
     end
 
-    -- Функция для открытия/закрытия меню
     local function toggleVoiceMenu()
         if LocalPlayer():isCP() and canToggleMenu then
             isMenuOpen = not isMenuOpen
             gui.EnableScreenClicker(isMenuOpen)
             canToggleMenu = false
 
-            -- Таймер для разблокировки нажатия
             timer.Simple(0.5, function() canToggleMenu = true end)
 
-            -- Анимация появления/исчезновения
             fadeAlpha = isMenuOpen and 0 or 255
             local fadeDirection = isMenuOpen and 1 or -1
             timer.Create("MenuFade", 0.01, 0, function()
@@ -139,13 +135,11 @@ if CLIENT then
         end
     end
 
-    -- Функция для воспроизведения общего звука
     local function playCommonSound()
         local soundToPlay = getRandomSound()
         surface.PlaySound(soundToPlay)
     end
 
-    -- Функция для определения адаптивного размера шрифта
     local function getAdaptiveFontSize(text, maxWidth)
         local fontSize = baseFontSize
         surface.SetFont("Trebuchet" .. fontSize)
@@ -158,7 +152,6 @@ if CLIENT then
         return fontSize
     end
 
-    -- Функция для отрисовки кнопок
     local function drawButtons()
         local hoverIndex = nil
         local availableWidth = ScrW()
@@ -170,14 +163,12 @@ if CLIENT then
             local buttonX = buttonPadding + column * (buttonWidth + buttonPadding)
             local buttonY = ScrH() / 2 - (buttonHeight * math.ceil(#voiceCommands / columns) + buttonSpacing * (math.ceil(#voiceCommands / columns) - 1)) / 2 + row * (buttonHeight + buttonSpacing)
 
-            -- Проверка нажатия мыши
             local mouseX, mouseY = gui.MousePos()
             if mouseX >= buttonX and mouseX <= buttonX + buttonWidth and mouseY >= buttonY and mouseY <= buttonY + buttonHeight then
                 hoverIndex = i
                 if input.IsMouseDown(MOUSE_LEFT) then
-                    playCommonSound() -- Воспроизводим общий звук
+                    playCommonSound()
 
-                    -- Отправка команды в чат
                     chat.AddText(Color(0, 255, 0), LocalPlayer():GetName() .. ": " .. cmd.command)
 
                     isMenuOpen = false
@@ -186,22 +177,19 @@ if CLIENT then
                 end
             end
 
-            -- Отрисовка кнопки
             local buttonColor = (hoverIndex == i) and Color(100, 100, 100, fadeAlpha) or Color(50, 50, 50, fadeAlpha)
             surface.SetDrawColor(buttonColor)
             surface.DrawRect(buttonX, buttonY, buttonWidth, buttonHeight)
 
-            -- Отрисовка текста
             local adaptiveFontSize = getAdaptiveFontSize(cmd.command, buttonWidth)
             draw.SimpleText(cmd.command, "Trebuchet" .. adaptiveFontSize, buttonX + 5, buttonY + buttonHeight / 2, Color(255, 255, 255, fadeAlpha), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
         end
     end
 
-    -- Функция для отрисовки градиентного фона
     local function drawGradientBackground()
         local x, y, w, h = 0, 0, ScrW(), ScrH()
-        local color1 = Color(50, 50, 50, 150) -- Более прозрачный цвет
-        local color2 = Color(30, 30, 30, 150) -- Более прозрачный цвет
+        local color1 = Color(50, 50, 50, 150)
+        local color2 = Color(30, 30, 30, 150)
 
         -- Отрисовка градиента
         surface.SetDrawColor(color1)
@@ -211,21 +199,17 @@ if CLIENT then
         surface.DrawRect(x, y + h / 2, w, h / 2)
     end
 
-    -- Функция для отрисовки меню
     local function drawVoiceMenu()
         if not isMenuOpen or fadeAlpha == 0 then return end
 
-        -- Отрисовка фона
         drawGradientBackground()
 
-        -- Заголовок меню
         draw.SimpleText("Голосовые команды", "Trebuchet" .. baseFontSize, ScrW() / 2, ScrH() / 2 - (buttonHeight * math.ceil(#voiceCommands / columns) + buttonSpacing * (math.ceil(#voiceCommands / columns) - 1)) / 2 - 30, Color(200, 200, 200, fadeAlpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 
-        -- Отрисовка кнопок
         drawButtons()
     end
 
-    -- Закрытие меню при щелчке вне его
+
     hook.Add("GUIMousePressed", "CloseMenuOnClickOutside", function()
         if isMenuOpen then
             local mouseX, mouseY = gui.MousePos()
@@ -236,14 +220,12 @@ if CLIENT then
             end
         end
     end)
-
-    -- Привязываем открытие меню к клавише N
+    
     hook.Add("PlayerButtonDown", "ToggleVoiceMenu", function(ply, button)
         if button == KEY_M then
             toggleVoiceMenu()
         end
     end)
 
-    -- Отрисовка меню в HUD
     hook.Add("HUDPaint", "DrawVoiceMenu", drawVoiceMenu)
 end
