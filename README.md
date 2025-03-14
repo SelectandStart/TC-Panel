@@ -1,20 +1,9 @@
-# TenCodes Panel для HL2 RP [Garry's Mod]
-**Панель кодов Альянса в стиле Half-Life 2 RolePlay**
+# TenCodes Panel for Helix HL2RP [Garry's Mod]
+**All code for Half-Life 2 RolePlay style**
 
-## 📂 Установка
-Выберите подходящий способ для вашего сервера:
+## 📂 Installation
 
-### 1. Через папку autorun
-garrysmod/addons/your_addon_name/lua/autorun/
+1. Add this folder, **tencodes/** to the following directory:
+garrysmod/gamemodes/ixhl2rp/plugins/
 
-- Поместите файл `cl_overlays.lua` в эту папку
-
-### 2. Для DarkRP модификаций
-garrysmod/addons/darkmodification/lua/darkrp_modules/tencodes/
-
-- Поместите файл `cl_overlays.lua` в эту папку
-
-## 🔄 Активация
-После установки выполните:
-1. Перезапустите сервер
-2. Нажать кнопу M
+2. Restart your server!
